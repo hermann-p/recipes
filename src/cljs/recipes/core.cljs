@@ -90,6 +90,12 @@
 (defn import-files [_]
   (let [file-list (.-files (sel1 :#fileDialog))
         n (.-length file-list)]
+    ; Tell server to initialise import buffer for n recipes
+    (POST "/import"
+          {:params {:imports n}
+           :format :json
+           :keywords? true})
+    ; Tell client to read files and send them to server
     (let [files (map #(aget file-list %) (range n))]
       (doseq [file files]
         (let [reader (js/FileReader.)]

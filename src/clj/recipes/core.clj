@@ -9,6 +9,10 @@
   (:gen-class))
 
 
+(def import-cache (atom {:textfiles []
+                         :num 0}))
+
+
 (defn slurp-json [json-str]
   (json/read-str (slurp json-str) :key-fn keyword))
 
@@ -29,17 +33,32 @@
               result (dc/get-recipe {:title title})]
           (println "/select" query)
           (json/write-str (extract-data result))))
+  (POST "/import" req
+        (let [input (json/read-str (slurp (:body req)))
+              n (get input "imports")]
+          (println "/import: preparing for" n " files")
+          (swap! import-cache assoc :textfiles [] :num n))
+        "cache ready")
   (POST "/store" req
         (let [plaintext (get (json/read-str (slurp (:body req))) "text")]
           (println "/store" (first (clojure.string/split plaintext #"\n")))
-          (dc/new-recipe! plaintext)
-          "storing successfull"))
+          (swap! import-cache update :textfiles conj plaintext)
+          (if (= (:num @import-cache) (count (:textfiles @import-cache)))
+            (do
+              (println "/store: cache filled, starting import")
+              (swap! import-cache assoc :num -1)
+              (dc/mass-import (:textfiles @import-cache)))
+            (println "  " (count (:textfiles @import-cache))
+                     "of"
+                     (:num @import-cache)
+                     "files received")))
+          "storing successfull")
 
   (POST "/delete" req
         (let [title (get (json/read-str (slurp (:body req))) "title")]
-          (println "/delete" title)
-          (dc/delete-recipe! (dc/get-recipe {:title title}))
-          "deletion successfull"))
+          (println "/delete" (first (clojure.string/split title #"\n")))
+          (dc/delete-recipe! title))
+          "deletion successfull")
           
   (route/resources "/")
   (route/not-found "<h1>404 - Page not found</h1>"))

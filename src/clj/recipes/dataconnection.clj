@@ -70,41 +70,71 @@
 
 
 (defn store-recipe! [{:keys [tags title] :as rcp-data} & update-tags]
-  (oc/with-db (og/open-graph-db! dbname user pass)
     (let [rcp-data (if-not (get-recipe {:title title})
                      rcp-data
                      (assoc rcp-data :title (str title " " (now))))
-          recipe (oc/save! (og/vertex :recipe (assoc rcp-data :created (now))))]
-      (doseq [tag (map get-tag! tags)]
-        (oc/save! (og/link! tag recipe))))))
+          recipe  (oc/save! (og/vertex :recipe (assoc rcp-data :created (now))))]
+        (doseq [tag (map get-tag! tags)]
+          (oc/save! (og/link! tag recipe)))))
 
 
 (defn new-recipe! [plaintext]
-  (store-recipe! (extract-recipe plaintext)))
+  (in-db store-recipe! (extract-recipe plaintext)))
+
+
+(defn mass-import [text-list]
+  (println "\n\nImporting" (count text-list) "items...")
+  (oc/with-db
+    (og/open-graph-db! dbname user pass)
+    (oc/with-intent :massive-write
+      (doall (map #(store-recipe! (extract-recipe %)) text-list)))
+
+    (println "- now" (count (oq/native-query :recipe {})) "recipes")
+    (println "-    " (count (oq/native-query :tag {})) "tags")))
 
 
 (defn delete-recipe! [recipe]
-  (oc/with-db (og/open-graph-db! dbname user pass)
-    (if-let [tags (:tags recipe)]
-      (doseq [tag (filter identity (map get-tag tags))]
-        (og/unlink! tag recipe)
-        (if-not (seq (og/get-edges tag :out))
-          (og/delete-vertex! tag)))
+  (let [recipe (if (map? recipe)
+                 recipe
+                 (get-recipe {:title recipe}))]
+    (if recipe
+      (println "- recipe found")
+      (println "- no such recipe"))
+    (oc/with-db (og/open-graph-db! dbname user pass)
+      (if-let [tags (:tags recipe)]
+        (doseq [tag (filter identity (map get-tag tags))]
+          (og/unlink! tag recipe)
+          (if-not (seq (og/get-edges tag :out))
+            (og/delete-vertex! tag))))
       (og/delete-vertex! recipe))))
+
+
+(defn- transferable [{:keys [title procedure ingreds image]}]
+  {:title title
+   :ingreds ingreds
+   :procedure procedure
+   :image image})
 
 
 (defmulti find-recipes dispatch-key)
 
 (defmethod find-recipes :title [{:keys [title]}]
-  (in-db
-    oq/native-query :recipe {:title [:$like (str "%" title "%")]}))
+  (sort-by :title
+           (set
+            (map transferable
+                 (in-db
+                  oq/native-query :recipe {:title [:$like (str "%" title "%")]})))))
 
 (defmethod find-recipes :tag [{:keys [tag]}]
-  (oc/with-db (og/open-graph-db! dbname user pass)
-    (let [tags (oq/native-query :tag {:name [:$like (str "%" tag "%")]})]
-      (reduce into [] (map #(og/get-ends % :out) tags)))))
+  (sort-by :title
+           (set
+            (map transferable
+                 (oc/with-db (og/open-graph-db! dbname user pass)
+                   (let [tags (oq/native-query :tag {:name [:$like (str "%" tag "%")]})]
+                     (reduce into [] (map #(og/get-ends % :out) tags))))))))
 
 (defmethod find-recipes :both [{:keys [both]}]
-  (sort-by :title (set
-   (into (or (seq (find-recipes {:title both})) [])
-         (find-recipes {:tag both})))))
+  (sort-by :title
+           (set
+            (into (or (seq (find-recipes {:title both})) [])
+                  (find-recipes {:tag both})))))
