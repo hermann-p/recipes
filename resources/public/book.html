@@ -6,14 +6,16 @@
   </head>
 
   <body>
-
-    <div id="filter" class="filter" style="overflow:auto;">
+  <div class="flex-container">
+    <div id="filter" class="filter">
       <div class="inner">
 
         <img id="files" width="48" height="48" src="text-file-icon.png"></img>
         <p id="importDialog" style="display:none;">
-          <input type="file" id="fileDialog" multiple>
-          <button id="importButton">importieren...</button>
+          <b>Rezepte importieren</b>
+          <input type="file" id="fileDialog" multiple><br>
+          <button id="importButton">importieren...</button><br>
+          <img id="loading" style="display:none" src="ajax-loader.gif">
           </input><br>
         </p>
 
@@ -27,6 +29,8 @@
 
 	<p>
 	  <b><u>Rezepte</u></b>
+          <br>
+          <img id="waitForSearch" src="ajax-loader.gif"></img>
 	<p id="resultArea">
 	</p>
 	</p>
@@ -34,18 +38,19 @@
       </div>
     </div>
 
-    <div id="ingredients" class="ingredients" style="overflow:auto;">
+    <div id="ingredients" class="ingredients">
       <div class="inner">
 	<p id="ingrCont"></p>
 	<img id="imgCur" width=100% style="visibility:hidden;"></img>
       </div>
     </div>
 
-    <div class="recipe" id="recipePanel" style="overflow:auto;">
+    <div class="recipe" id="recipePanel">
       <div class="inner">
 	<p id="recipe"></p>
       </div>
     </div>
+  </div>
 
     <script type="text/javascript" src="js/recipes.js"></script>
   </body>

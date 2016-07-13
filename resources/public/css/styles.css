@@ -1,90 +1,71 @@
-body {
-    background-color: darkOrange;
+@font-face {
+    font-family: Chalkduster;
+    src: url(file:///home/hermann-p/workcspace/recipes/resources/public/Chalkduster.ttf);
 }
 
-div {
-    border-radius: 1em;
-    padding-left: 0.5em;
-    padding-right: 0.5em;
-//    margin-left: 0.5em;
-//    margin-right: 0.5em;
+body {
     background-color: darkOrange;
+    font-size: 18px;
+}
+
+.filter .ingredients .recipe {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    align-content: stretch;
+    height: 100%;
+}
+
+.filter {
+    order: 3;
+}
+
+.flex-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: stretch;
+    align-content: stretch;
 }
 
 .inner {
     background-color: lightYellow;
-    padding-top: 2%;
-    padding-bottom: 2%;
-    margin: 2%;
+    padding: 0.5em;
+    margin: 0.5em;
     overflow: auto;
-    height: 96%;
-    font-family: "Chalkduster";
+    height: calc(100% - 2em);
+    font-family: Chalkduster;
 }
 
 
 .filter {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 30%;
-    height: 100%;
+    flex-grow: 0.5;
+    flex-shrink: 2;
+    flex-basis: 150px;
 }
-
-.filter:hover {
-    background-color: darkRed;
-}
-
 
 .ingredients {
-    position: absolute;
-    left: 33%;
-    top: 0;
-    width: 30%;
-    height: 100%;
+    flex-grow: 1;
+    flex-shrink: 0;
+    flex-basis: 200px;
 }
 
 .recipe {
-    position: absolute;
-    top: 0;
-    left: 66%;
-    right: 0;
-    height: 100%;
-}
-
-.newRecipeWindow {
-    position:absolute;
-    left: 2em;
-    right: 2em;
-    top: 2em;
-//    bottom: 2em;
-    background-color: orange;
-    z-index:2;
+    flex-grow: 2;
+    flex-shrink: 0;
+    flex-basis: 400px;
 }
 
 #name {
     width: 100%;
 }
 
-textarea {
-    position: relative;
-    height: 70%;
-    width: 45%;
-}
-
 body * {
     border-radius: 0.5em;
-}
-
-.tagBox {
-    position: relative;
-    padding: 2px;
-    border-radius: 5px;
-    background-color: purple;
-    color: white;
-}
-
-.tagBox:hover {
-    background-color: darkRed;
 }
 
 button {
@@ -93,4 +74,8 @@ button {
 
 .rlink:hover {
     color: red;
+}
+
+.rlink {
+    line-height: 1.3em;
 }
