@@ -29,12 +29,14 @@
         (map clojure.string/join
              (clojure.string/split text #"\n\n"))]
     {:title title
+     :ltitle (clojure.string/lower-case title)
      :ingreds ingreds
      :procedure procedure
      :tags  (set
-             (filter
-              #(< 0 (count %)) 
-              (clojure.string/split (clojure.string/join tags) #"[,\n][ ]*")))
+             (map clojure.string/lower-case
+                  (filter
+                   #(< 0 (count %)) 
+                   (clojure.string/split (clojure.string/join tags) #"[,\n][ ]*"))))
      :image image}))
 
 
@@ -47,7 +49,7 @@
 
 (defmulti get-recipe dispatch-key)
 (defmethod get-recipe :title [{:keys [title]}]
-  (first (in-db oq/native-query :recipe {:title title})))
+  (first (in-db oq/native-query :recipe {:ltitle (clojure.string/lower-case title)})))
 (defmethod get-recipe :orid [{:keys [orid]}]
   (in-db oc/load orid))
 
@@ -70,9 +72,12 @@
 
 
 (defn store-recipe! [{:keys [tags title] :as rcp-data} & update-tags]
-    (let [rcp-data (if-not (get-recipe {:title title})
+  (let [ltitle (clojure.string/lower-case title)
+        rcp-data (if-not (get-recipe {:title title})
                      rcp-data
-                     (assoc rcp-data :title (str title " " (now))))
+                     (assoc rcp-data
+                            :title (str title " " (now))
+                            :ltitle (clojure.string/lower-case (str title " " (now)))))
           recipe  (oc/save! (og/vertex :recipe (assoc rcp-data :created (now))))]
         (doseq [tag (map get-tag! tags)]
           (oc/save! (og/link! tag recipe)))))
@@ -82,15 +87,23 @@
   (in-db store-recipe! (extract-recipe plaintext)))
 
 
+(defn- is-recipe-file? [text]
+  (if-not (< 3 (count (clojure.string/split text #"\n\n")))
+    (println (str "## Error: >>"
+                  (first (clojure.string/split text #"\n"))
+                  "<< is not good"))
+    true))
+
 (defn mass-import [text-list]
   (println "\n\nImporting" (count text-list) "items...")
   (oc/with-db
     (og/open-graph-db! dbname user pass)
     (oc/with-intent :massive-write
-      (doall (map #(store-recipe! (extract-recipe %)) text-list)))
-
-    (println "- now" (count (oq/native-query :recipe {})) "recipes")
-    (println "-    " (count (oq/native-query :tag {})) "tags")))
+      (doall (map #(store-recipe! (extract-recipe %))
+                  (filter is-recipe-file? text-list))))
+    (println "- now"
+             (count (oq/native-query :recipe {})) "recipes,"
+             (count (oq/native-query :tag {})) "tags")))
 
 
 (defn delete-recipe! [recipe]
@@ -123,14 +136,16 @@
            (set
             (map transferable
                  (in-db
-                  oq/native-query :recipe {:title [:$like (str "%" title "%")]})))))
+                  oq/native-query :recipe
+                  {:ltitle [:$like (str "%" (clojure.string/lower-case title) "%")]})))))
 
 (defmethod find-recipes :tag [{:keys [tag]}]
   (sort-by :title
            (set
             (map transferable
                  (oc/with-db (og/open-graph-db! dbname user pass)
-                   (let [tags (oq/native-query :tag {:name [:$like (str "%" tag "%")]})]
+                   (let [tags (oq/native-query
+                               :tag {:name [:$like (str "%" (clojure.string/lower-case tag) "%")]})]
                      (reduce into [] (map #(og/get-ends % :out) tags))))))))
 
 (defmethod find-recipes :both [{:keys [both]}]

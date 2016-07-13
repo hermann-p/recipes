@@ -57,7 +57,7 @@
   (POST "/delete" req
         (let [title (get (json/read-str (slurp (:body req))) "title")]
           (println "/delete" (first (clojure.string/split title #"\n")))
-          (dc/delete-recipe! title))
+          (dotimes [n 2] (dc/delete-recipe! title)))
           "deletion successfull")
           
   (route/resources "/")
@@ -67,9 +67,9 @@
   (handler/site app-routes))
 
 (defn -main [& args]
-  (run-jetty app-routes {:port 8080 :join? false})
+  (run-jetty app-routes {:port 8079 :join? false})
   (if (java.awt.Desktop/isDesktopSupported)
     (try
       (.browse (java.awt.Desktop/getDesktop)
-               (java.net.URI. "http://0.0.0.0:8080"))
+               (java.net.URI. "http://0.0.0.0:8079"))
       (catch Exception e))))
