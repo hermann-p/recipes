@@ -6,51 +6,50 @@
   </head>
 
   <body>
-  <div class="flex-container">
-    <div id="filter" class="filter">
-      <div class="inner">
+    <div id="header"><h1>Rezeptbuch</h1></div>
+    <div class="flex-container">
+      <div id="filter" class="filter">
+        <div class="inner">
 
-        <img id="files" width="48" height="48" src="text-file-icon.png"></img>
-        <p id="importDialog" style="display:none;">
-          <b>Rezepte importieren</b>
-          <input type="file" id="fileDialog" multiple><br>
-          <button id="importButton">importieren...</button><br>
-          <img id="loading" style="display:none" src="ajax-loader.gif">
+          <img id="files" width="48" height="48" src="text-file-icon.png"></img>
+          <p id="importDialog" style="display:none;">
+            <b>Rezepte importieren</b>
+            <input type="file" id="fileDialog" multiple><br>
+            <button id="importButton">importieren...</button><br>
+            <img id="loading" style="display:none" src="ajax-loader.gif">
           </input><br>
-        </p>
+          </p>
 
-	<p id="searchArea">
-	  <input type="text" id="searchText"></input>
-	  <button id="searchButton">Suchen</button>
-          <br>
-          <input type="checkbox" id="searchTitles" checked>Rezeptname</input>
-          <input type="checkbox" id="searchTags" checked>Tags</input>
-	</p>
+	  <p id="searchArea">
+	    <input type="text" id="searchText"></input><br>
+	    <button id="searchButton">Suchen</button>
+            <br>
+            <input type="checkbox" id="searchTitles" checked>Rezeptname</input><br>
+            <input type="checkbox" id="searchTags" checked>Tags</input>
+	  </p>
 
-	<p>
-	  <b><u>Rezepte</u></b>
-          <br>
-          <img id="waitForSearch" src="ajax-loader.gif"></img>
-	<p id="resultArea">
-	</p>
-	</p>
+	  <p>
+            <img id="waitForSearch" src="ajax-loader.gif"></img><br>
+	  <div id="resultArea">
+	  </div>
+	  </p>
 
+        </div>
+      </div>
+
+      <div id="ingredients" class="ingredients">
+        <div class="inner">
+	  <p id="ingrCont"></p>
+	  <img id="imgCur" width=100% style="visibility:hidden;"></img>
+        </div>
+      </div>
+
+      <div class="recipe" id="recipePanel">
+        <div class="inner">
+	  <p id="recipe"></p>
+        </div>
       </div>
     </div>
-
-    <div id="ingredients" class="ingredients">
-      <div class="inner">
-	<p id="ingrCont"></p>
-	<img id="imgCur" width=100% style="visibility:hidden;"></img>
-      </div>
-    </div>
-
-    <div class="recipe" id="recipePanel">
-      <div class="inner">
-	<p id="recipe"></p>
-      </div>
-    </div>
-  </div>
 
     <script type="text/javascript" src="js/recipes.js"></script>
   </body>

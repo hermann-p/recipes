@@ -122,34 +122,30 @@
       (og/delete-vertex! recipe))))
 
 
-(defn- transferable [{:keys [title procedure ingreds image]}]
-  {:title title
-   :ingreds ingreds
-   :procedure procedure
-   :image image})
-
+; (defn- transferable [{:keys [title procedure ingreds image]}]
+;   {:title title
+;    :ingreds ingreds
+;    :procedure procedure
+                                        ;    :image image})
 
 (defmulti find-recipes dispatch-key)
 
 (defmethod find-recipes :title [{:keys [title]}]
-  (sort-by :title
-           (set
-            (map transferable
-                 (in-db
-                  oq/native-query :recipe
-                  {:ltitle [:$like (str "%" (clojure.string/lower-case title) "%")]})))))
+  (sort (set
+         (map :title
+              (in-db
+               oq/native-query :recipe
+               {:ltitle [:$like (str "%" (clojure.string/lower-case title) "%")]})))))
 
 (defmethod find-recipes :tag [{:keys [tag]}]
-  (sort-by :title
-           (set
-            (map transferable
-                 (oc/with-db (og/open-graph-db! dbname user pass)
-                   (let [tags (oq/native-query
-                               :tag {:name [:$like (str "%" (clojure.string/lower-case tag) "%")]})]
-                     (reduce into [] (map #(og/get-ends % :out) tags))))))))
+  (sort (set
+         (map :title
+              (oc/with-db (og/open-graph-db! dbname user pass)
+                (let [tags (oq/native-query
+                            :tag {:name [:$like (str "%" (clojure.string/lower-case tag) "%")]})]
+                  (reduce into [] (map #(og/get-ends % :out) tags))))))))
 
 (defmethod find-recipes :both [{:keys [both]}]
-  (sort-by :title
-           (set
-            (into (or (seq (find-recipes {:title both})) [])
-                  (find-recipes {:tag both})))))
+  (sort (set
+         (into (or (seq (find-recipes {:title both})) [])
+               (find-recipes {:tag both})))))

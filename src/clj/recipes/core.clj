@@ -17,14 +17,19 @@
   (json/read-str (slurp json-str) :key-fn keyword))
 
 (defn extract-data [{:keys [title procedure ingreds tags image]}]
-  {:title title :procedure procedure :ingreds ingreds :tags tags :image image})
+  {:title title
+   :procedure (clojure.string/split procedure #"\n")
+   :ingreds (clojure.string/split ingreds #"\n")
+   :tags tags
+   :image image})
 
 (defroutes app-routes
   (GET "/" [] (resp/resource-response "book.html" {:root "public"}))
   (POST "/search" {body :body}
         (let [query (slurp-json body)
               results (dc/find-recipes query)
-              results (map extract-data results)]
+              ;results (map extract-data results)
+              ]
           (println "/search query:" query)
           (json/write-str results)))
   (POST "/select" {body :body}
