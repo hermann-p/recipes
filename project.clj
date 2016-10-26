@@ -1,7 +1,7 @@
-(defproject recipes "0.1.2-SNAPSHOT"
-  :description "FIXME: write description"
+(defproject recipes "0.1.3"
+  :description "RESTful Rezeptdatenbankserver (ring) mit WebApp Obefläche (reactive/reagent, responsive layout)"
   :url "http://example.com/FIXME"
-  :license {:name "Eclipse Public License"
+  :license {:name "MIT license"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :source-paths ["src/clj" "src/cljs"]
   :dependencies [[org.clojure/clojure "1.8.0"]
