@@ -76,7 +76,7 @@
          :handler #(reset! cur-recipe %)}))
 
 (defn header-component []
-  [:h1 (or (:title @cur-recipe) "Kochbuch")])
+  [:font.header (or (:title @cur-recipe) "Das Kochbuch")])
 
 (defn result-component []
   (dommy/toggle! (dommy/sel1 :#waitForSearch) false)

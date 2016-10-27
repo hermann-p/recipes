@@ -1,0 +1,22 @@
+.flex-container {
+    flex-direction: column;
+    align-content: stretch;
+    align-items: stretch;
+    justify-content: flex-start;
+}
+#filter, #recipePanel, #ingredients {
+    flex: 0 0 0;
+}
+#filter {
+    order: 2;
+}
+#recipePanel {
+    order: 1;
+}
+#ingredients {
+    order: 0;
+}
+#searchArea, input, button {
+    text-align: center;
+    font-size: 4vw;
+}

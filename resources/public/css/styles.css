@@ -1,120 +1,50 @@
-@font-face {
-    font-family: Chalkduster;
-    src: url(/Chalkduster.ttf);
-}
-
 body {
     background-color: darkOrange;
-    font-size: 18px;
 }
 
 
 .flex-container {
+    width: 100%;
     margin: 0;
     position: absolute;
+    padding-top: 3em;
     left: 0;
-    top: 15%;
+    top: 0;
     display: flex;
 }
 
 #header {
-    position: fixed;
-    z-index: 10;
-    left: 0;
-    top: 0;
+    z-index: 1;
     border-radius: 0;
     margin: 0;
-    width: 100vw;
+    width: 100%;
+    margin: 0;
+    padding: 0;
     background-color: lightYellow;
-    text-transform: small-caps;
+    font-size: 2em;
     text-align: center;
+    display: inline-block;
+
+    position: fixed;
+    left: 0;
+    top: 0;
 }
 
 .inner {
     background-color: lightYellow;
     padding: 0.5em;
-    margin: 1%;
     overflow-y: auto;
     overflow-x: hidden;
-    font-family: Chalkduster;
+    border-radius: 1.5em;
+}
+
+.cnt {
+    margin: 0.5%;
 }
 
 h1 {
     text-align: center;
-}
-
-@media (orientation: portrait) {
-    .flex-container {
-        flex-direction: column;
-        align-content: stretch;
-        align-items: stretch;
-        justify-content: flex-start;
-    }
-    .filter .recipe .ingredients {
-        flex: 0 0 0;
-    }
-    .filter {
-        order: 2;
-    }
-    .recipe {
-        order: 1;
-    }
-    .ingredients {
-        order: 0;
-    }
-    #searchArea {
-        text-align: center;
-        font-size: 4vw;
-    }
-    input {
-        font-size: 4vw;
-    }
-    button {
-        font-size: 4vw;
-    }
-}
-
-@media (orientation: landscape) {
-    .flex-container {
-        flex-flow: row;
-        width: 96%;
-        height: 93%;
-    }
-    .inner {
-        height: calc(90% - 2em);
-    }
-    .filter {
-        flex: 0 0 20%;
-        order: 2;
-    }
-
-    .ingredients {
-        flex: 0 0 30%;
-        order: 0;
-    }
-
-    .recipe {
-        flex: 0 0 50%;
-        order: 1;
-    }
-    #searchArea {
-        text-align: center;
-        font-size: 3vh;
-    }
-    button {
-        font-size: 3vh;
-    }
-    input {
-        font-size: 3vh;
-    }
-}
-
-#name {
-    width: 100%;
-}
-
-body * {
-    border-radius: 0.5em;
+    font-size: 2em;
 }
 
 button {
@@ -133,3 +63,4 @@ button {
     margin: 0.7em;
     background-color: orange;
 }
+

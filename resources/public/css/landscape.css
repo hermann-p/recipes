@@ -1,0 +1,39 @@
+.flex-container {
+    height: 100%;
+    flex-direction: row;
+    flex-wrap: no-wrap;
+    align-items: stretch;
+    align-content: stretch;
+    justify-content: space-between;
+}
+
+body {
+    overflow: hidden;
+}
+
+
+.inner {
+    height: 100%;
+}
+.cnt {
+    height: calc(100% - 5em);
+}
+#filter {
+    flex: 0 0 20%;
+    order: 3;
+}
+
+#ingredients {
+    flex: 0 0 25%;
+    order: 1;
+}
+
+#recipePanel {
+    flex: 4 1 auto;
+    order: 2;
+}
+
+#searchArea, button, input {
+    text-align: center;
+    font-size: 3vh;
+}

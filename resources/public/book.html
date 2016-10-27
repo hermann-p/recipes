@@ -5,12 +5,17 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <link rel=StyleSheet href="css/styles.css" type="text/css">
+    <link rel="stylesheet" media="(orientation: landscape) and (min-width: 700px)" href="css/landscape.css">
+    <link rel="stylesheet" media="(orientation: portrait)" href="css/portrait.css">
+    <link rel="stylesheet" media="(max-width: 699px)" href="css/portrait.css">
+    <link rel="stylesheet" media="(max-aspect-ration: 800/437)" href="css/portrait.css">
   </head>
 
   <body>
-    <div id="header"><h1>Rezeptbuch</h1></div>
+
+    <div id="header"></div>
     <div class="flex-container">
-      <div id="filter" class="filter">
+      <div id="filter" class="cnt">
         <div class="inner">
 
           <img id="files" width="48" height="48" src="text-file-icon.png"></img>
@@ -39,14 +44,14 @@
         </div>
       </div>
 
-      <div id="ingredients" class="ingredients">
+      <div id="ingredients" class="cnt">
         <div class="inner">
 	  <p id="ingrCont"></p>
 	  <img id="imgCur" width=100% style="visibility:hidden;"></img>
         </div>
       </div>
 
-      <div class="recipe" id="recipePanel">
+      <div class="cnt" id="recipePanel">
         <div class="inner">
 	  <p id="recipe"></p>
         </div>
