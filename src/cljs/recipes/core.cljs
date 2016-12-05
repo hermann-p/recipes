@@ -5,8 +5,6 @@
 
 (enable-console-print!)
 
-(defonce app-state (atom {:text "Hello world!"}))
-
 (defn on-js-reload [])
 
 (defonce search-results (r/atom []))
